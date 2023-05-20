@@ -1,0 +1,104 @@
+javascript:(function() {
+  var customizationContainer = document.createElement('div');
+  customizationContainer.style.position = 'fixed';
+  customizationContainer.style.top = '50%';
+  customizationContainer.style.left = '50%';
+  customizationContainer.style.transform = 'translate(-50%, -50%)';
+  customizationContainer.style.backgroundColor = '#ffffff';
+  customizationContainer.style.borderRadius = '8px';
+  customizationContainer.style.boxShadow = '0 4px 6px rgba(0, 0, 0, 0.1)';
+  customizationContainer.style.fontFamily = 'Arial, sans-serif';
+  customizationContainer.style.zIndex = '9999';
+  customizationContainer.style.padding = '20px';
+  customizationContainer.style.userSelect = 'none';
+  customizationContainer.style.color = '#000000';
+
+  var heading = document.createElement('h2');
+  heading.textContent = 'Web Page Customizer';
+  heading.style.margin = '0 0 20px';
+  heading.style.fontWeight = 'bold';
+  heading.style.fontSize = '24px';
+  heading.style.textAlign = 'center';
+
+  var backgroundColorLabel = document.createElement('label');
+  backgroundColorLabel.textContent = 'Background Color: ';
+  backgroundColorLabel.style.display = 'block';
+  backgroundColorLabel.style.marginBottom = '10px';
+
+  var backgroundColorInput = document.createElement('input');
+  backgroundColorInput.type = 'color';
+  backgroundColorInput.value = '#ffffff';
+
+  var textColorLabel = document.createElement('label');
+  textColorLabel.textContent = 'Text Color: ';
+  textColorLabel.style.display = 'block';
+  textColorLabel.style.marginBottom = '10px';
+
+  var textColorInput = document.createElement('input');
+  textColorInput.type = 'color';
+  textColorInput.value = '#000000';
+
+  var fontSizeLabel = document.createElement('label');
+  fontSizeLabel.textContent = 'Font Size: ';
+  fontSizeLabel.style.display = 'block';
+  fontSizeLabel.style.marginBottom = '10px';
+
+  var fontSizeInput = document.createElement('input');
+  fontSizeInput.type = 'range';
+  fontSizeInput.min = '10';
+  fontSizeInput.max = '72';
+  fontSizeInput.value = '14';
+  fontSizeInput.style.width = '100%';
+  fontSizeInput.style.pointerEvents = 'auto';
+
+  customizationContainer.appendChild(heading);
+  customizationContainer.appendChild(backgroundColorLabel);
+  customizationContainer.appendChild(backgroundColorInput);
+  customizationContainer.appendChild(textColorLabel);
+  customizationContainer.appendChild(textColorInput);
+  customizationContainer.appendChild(fontSizeLabel);
+  customizationContainer.appendChild(fontSizeInput);
+  document.body.appendChild(customizationContainer);
+
+  var isDragging = false;
+  var offsetX = 0;
+  var offsetY = 0;
+
+  customizationContainer.addEventListener('mousedown', function(e) {
+    if (e.target !== fontSizeInput) {
+      isDragging = true;
+      offsetX = e.clientX - customizationContainer.offsetLeft;
+      offsetY = e.clientY - customizationContainer.offsetTop;
+    }
+  });
+
+  customizationContainer.addEventListener('mouseup', function() {
+    isDragging = false;
+  });
+
+  customizationContainer.addEventListener('mousemove', function(e) {
+    if (isDragging) {
+      customizationContainer.style.left = e.clientX - offsetX + 'px';
+      customizationContainer.style.top = e.clientY - offsetY + 'px';
+    }
+  });
+
+  backgroundColorInput.addEventListener('input', function() {
+    document.body.style.backgroundColor = this.value;
+  });
+
+  textColorInput.addEventListener('input', function() {
+    document.body.style.color = this.value;
+  });
+
+  var originalFontSize = window.getComputedStyle(document.body).fontSize;
+  fontSizeInput.addEventListener('input', function() {
+    var style = document.createElement('style');
+    style.innerHTML = 'html, body { font-size: ' + originalFontSize + '; }';
+    document.head.appendChild(style);
+    var uiElements = customizationContainer.querySelectorAll('*');
+    for (var i = 0; i < uiElements.length; i++) {
+      uiElements[i].style.fontSize = this.value + 'px';
+    }
+  });
+})();
